@@ -13,7 +13,7 @@ const getRedirectPathByRole = (role?: string | null) => {
   return "/dashboard";
 };
 
-const Home = async () => {
+const Home = () => {
   const router = useRouter();
 
   useEffect(() => {

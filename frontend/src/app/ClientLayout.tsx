@@ -1,5 +1,9 @@
+"use client";
 import { clearTokens, getAccessToken } from "@/api/apis/auth/authUtils";
+import ThemeToggle from "@/components/theme/ThemeToggle";
+import { useColors } from "@/contexts/ThemeContext";
 import { Geist, Geist_Mono, Lora, Roboto } from "next/font/google";
+import { AppProgressBar } from "next-nprogress-bar";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import ToasterProvider from "./ToastProvider";
@@ -20,6 +24,7 @@ const normalizeRole = (role?: string | null) =>
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const colors = useColors();
 
   const isAuthRoute = pathname?.startsWith("/auth");
   const isUserRoute = pathname?.startsWith("/user");
@@ -58,23 +63,36 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
     <div
       className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} ${roboto.variable} antialiased`}
     >
-      <ToasterProvider />
-      <ReactQueryProvider>
-        <AuthProvider>
-          {isAuthRoute ? (
-            <>{children}</>
-          ) : (
-            <div className="flex">
-              <span>sidebar</span>
-              <main className="flex-1 min-w-0 bg-[#5840BA] pl-5">
-                <div className="p-6 overflow-auto h-screen scrollbar-hide bg-[#f4f4f4]">
-                  {children}
-                </div>
-              </main>
-            </div>
-          )}
-        </AuthProvider>
-      </ReactQueryProvider>
+    <AppProgressBar
+      height="3px"
+      color={colors.primary}
+      options={{ showSpinner: false }}
+      shallowRouting
+    />
+    <ThemeToggle />
+    <ToasterProvider />
+    <ReactQueryProvider>
+      <AuthProvider>
+        {isAuthRoute ? (
+          <>{children}</>
+        ) : (
+          <div className="flex">
+            <span>sidebar</span>
+            <main
+              className="flex-1 min-w-0 pl-5"
+              style={{ backgroundColor: colors.primary }}
+            >
+              <div
+                className="h-screen overflow-auto p-6 scrollbar-hide"
+                style={{ backgroundColor: colors.pageBg }}
+              >
+                {children}
+              </div>
+            </main>
+          </div>
+        )}
+      </AuthProvider>
+    </ReactQueryProvider>
     </div>
   );
 };

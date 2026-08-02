@@ -1,3 +1,4 @@
+"use client";
 import { clearTokens, getAccessToken } from "@/api/apis/auth/authUtils";
 import {
   AuthContextType,
